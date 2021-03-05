@@ -13,4 +13,19 @@ class Transaction {
   };
 }
 
-const transaction = new Transaction();
+// const transaction = new Transaction();
+
+class Block {
+  constructor(prevHash, transaction) {
+    this.prevHash = prevHash;
+    this.transaction = transaction;
+    this.timeStamp = new Date.now();
+  }
+
+  getHash = () => {
+      const str = JSON.stringify(this);
+      const hash = crypto.createHash('SHA256');
+      hash.update(str).end();
+      return hash.digest('hex')
+  }
+}
