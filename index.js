@@ -38,7 +38,7 @@ class Chain {
 
   constructor() {
     this.chain = [
-      new Block(null, new Transaction(100, "odigenasis", "protas")),
+      new Block(null, new Transaction(100, "odigenasis", "protas", "brian", "allen")),
     ];
   }
 
@@ -108,7 +108,13 @@ class Wallet {
 
 const odigenasis = new Wallet();
 const protas = new Wallet();
+const brian = new Wallet();
+const allen = new Wallet();
 
 odigenasis.sendMoney(50, protas.publicKey);
+brian.sendMoney(300000, allen.publicKey);
+allen.sendMoney(7000, odigenasis.publicKey);
+brian.sendMoney(3000, protas.publicKey);
+protas.sendMoney(400, odigenasis.publicKey);
 
 console.log("😎",Chain.instance);
