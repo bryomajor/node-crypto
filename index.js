@@ -44,9 +44,16 @@ class Chain {
     return this.chain[this.chain.length - 1];
   };
 
-  addBlock = (transaction, sendPublicKey, signature) => {
-    const newBlock = new Block(this.lastBlock.hash, transaction);
-    this.chain.push(newBlock);
+  addBlock = (transaction, senderPublicKey, signature) => {
+      const verifier = crypto.createVerify('SHA256');
+      verifier.update(transaction.toString());
+
+      const isValid = verifier.verify(senderPublicKey, signature);
+
+      if (isValid) {
+        const newBlock = new Block(this.lastBlock.hash, transaction);
+        this.chain.push(newBlock);
+      }
   };
 }
 
