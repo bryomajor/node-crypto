@@ -21,7 +21,7 @@ class Block {
   constructor(prevHash, transaction) {
     this.prevHash = prevHash;
     this.transaction = transaction;
-    this.timeStamp = new Date.now();
+    this.timeStamp = Date.now();
   }
 
   getHash = () => {
@@ -73,7 +73,7 @@ class Chain {
       const isValid = verifier.verify(senderPublicKey, signature);
 
       if (isValid) {
-        const newBlock = new Block(this.lastBlock.hash, transaction);
+        const newBlock = new Block(this.getLastBlock().getHash(), transaction);
         this.mine(newBlock.nonce);
         this.chain.push(newBlock);
       }
@@ -92,10 +92,10 @@ class Wallet {
     });
 
     this.privateKey = keypair.privateKey;
-    this.publicKey = new Transaction();
+    this.publicKey = keypair.publicKey;
   }
 
-  sendMoney = (amount, payeePublicKey) {
+  sendMoney = (amount, payeePublicKey) => {
       const transaction = new Transaction(amount, this.publicKey, payeePublicKey);
 
       const sign = crypto.createSign('SHA256');
@@ -111,4 +111,4 @@ const protas = new Wallet();
 
 odigenasis.sendMoney(50, protas.publicKey);
 
-console.log(Chain.instance)
+console.log("😎",Chain.instance);
