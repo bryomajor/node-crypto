@@ -23,28 +23,55 @@ class Block {
   }
 
   getHash = () => {
-      const str = JSON.stringify(this);
-      const hash = crypto.createHash('SHA256');
-      hash.update(str).end();
-      return hash.digest('hex');
-  }
+    const str = JSON.stringify(this);
+    const hash = crypto.createHash("SHA256");
+    hash.update(str).end();
+    return hash.digest("hex");
+  };
 }
 
-
 class Chain {
-    static instance = new Chain();
-    chain = []
+  static instance = new Chain();
+  chain = [];
 
-    constructor() {
-        this.chain = [new Block(null, new Transaction(100, 'odigenasis', 'protas'))];
-    }
+  constructor() {
+    this.chain = [
+      new Block(null, new Transaction(100, "odigenasis", "protas")),
+    ];
+  }
 
-    getLastBlock = () => {
-        return this.chain[this.chain.length - 1];
-    }
+  getLastBlock = () => {
+    return this.chain[this.chain.length - 1];
+  };
 
-    addBlock = (transaction, sendPublicKey, signature) => {
-        const newBlock = new Block(this.lastBlock.hash, transaction);
-        this.chain.push(newBlock);
-    }
+  addBlock = (transaction, sendPublicKey, signature) => {
+    const newBlock = new Block(this.lastBlock.hash, transaction);
+    this.chain.push(newBlock);
+  };
+}
+
+class Wallet {
+  publicKey;
+  privateKey;
+
+  constructor() {
+    const keypair = crypto.generateKeyPairSync("rsa", {
+      modulusLength: 2048,
+      publicKeyEncoding: { type: "spki", format: "pem" },
+      privateKeyEncoding: { type: "pkcs8", format: "pem" },
+    });
+
+    this.privateKey = keypair.privateKey;
+    this.publicKey = new Transaction();
+  }
+
+  sendMoney = (amount, payeePublicKey) {
+      const transaction = new Transaction(amount, this.publicKey, payeePublicKey);
+
+      const sign = crypto.createSign('SHA256');
+      sign.update(transaction.toString()).end();
+
+      const signature = sign.sign(this.privateKey);
+      Chain.instance.addBlock(transaction, this.publicKey, signature);
+  }
 }
