@@ -105,3 +105,10 @@ class Wallet {
       Chain.instance.addBlock(transaction, this.publicKey, signature);
   }
 }
+
+const odigenasis = new Wallet();
+const protas = new Wallet();
+
+odigenasis.sendMoney(50, protas.publicKey);
+
+console.log(Chain.instance)
